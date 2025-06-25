@@ -90,8 +90,8 @@ export default defineConfig({
 
     footer: {
       message:
-        'Made with ❤️ by <a href="https://aircode.io" target="_blank">AirCode</a>',
-      copyright: '© 2023 AirCode, Inc. All rights reserved.',
+        'Made with ❤️ by <a href="https://firebase.google.com/" target="_blank">Firebase</a>', // Updated to Firebase
+      copyright: '© 2023 Firebase, Inc. All rights reserved.', // Updated to Firebase
     },
   },
 })

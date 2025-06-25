@@ -115,7 +115,7 @@ const config = {
           type: 'custom-documate',
           position: 'right',
           // Replace the URL with your own one
-          endpoint: 'https://test123.us.aircode.run/ask',
+          endpoint: 'https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask', // TODO: Replace with actual GCF URL
         },
       ],
     },

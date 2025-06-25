@@ -10,7 +10,7 @@ function App() {
 
   return (
     <>
-      <Documate endpoint='https://9b767964ir.us.aircode.run/ask'/>
+      <Documate endpoint='https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask'/> {/* TODO: Replace with actual GCF URL */}
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />

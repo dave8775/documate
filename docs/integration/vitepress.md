@@ -76,7 +76,7 @@ export default {
   Layout: h(DefaultTheme.Layout, null, {
     'nav-bar-content-before': () => h(Documate, {
         // Replace the URL with your own one
-        endpoint: 'https://test123.us.aircode.run/ask',
+        endpoint: 'https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask', // TODO: Replace with actual GCF URL
       },
     ),
   }),

@@ -3,5 +3,5 @@
   "include": [
     "**/*.md"
   ],
-  "backend": "https://xqtb17uycg.us.aircode.run/upload"
+  "backend": "https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/upload" // TODO: Replace with actual GCF URL
 }

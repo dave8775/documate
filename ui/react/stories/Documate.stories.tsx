@@ -16,13 +16,13 @@ type Story = StoryObj<typeof meta>;
  */
 export const Primary: Story = {
   args: {
-    endpoint: 'https://8c7b1be9gi.us.aircode.run/ask'
+    endpoint: 'https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask' // TODO: Replace with actual GCF URL
   }
 };
 
 export const AskSpriteJS: Story = {
   args: {
-    endpoint: 'https://8c7b1be9gi.us.aircode.run/ask',
+    endpoint: 'https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask', // TODO: Replace with actual GCF URL
     predefinedQuestions: [
       'What is SpriteJS?',
       'How can I use SpriteJS to draw a circle?',

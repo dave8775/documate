@@ -1,10 +1,10 @@
-# Documate Alternative Backend
+# Documate Alternative Backend (Azure OpenAI)
 
-This is the alternative backend of Documate, you can get a copy and launch your own on [AirCode](https://aircode.io) by clicking the button below.
+This directory provides an alternative backend implementation for Documate using Azure OpenAI services. This backend is designed for users who prefer or require using Azure's OpenAI offerings.
 
-[![Deploy with AirCode](https://aircode.io/aircode-deploy-button.svg)](https://aircode.io/dashboard?owner=AirCodeLabs&repo=documate&path=alternative-backends%2Fazure-openai&appname=Documate%20backend%20Azure%20OpenAI)
+The JavaScript files (`ask.js`, `generate.js`, `upload.js`) in this directory are designed to be deployed as serverless functions. You can adapt them for deployment on platforms like Google Cloud Functions, AWS Lambda, or others.
 
-## Usage
+## Configuration for Azure OpenAI
 
 To use Azure OpenAI as the backend, you need to deploy two models: one GPT model and one Embedding model.
 
@@ -18,5 +18,8 @@ Unlike the OpenAI Backend, the Azure OpenAI Backend requires the configuration o
 - `AZURE_OPENAI_EMBEDDING` : The deployment ID fo the Embedding module.
 
 <img src="https://aircode-yvo.b-cdn.net/resource/1695293476139-n2f95c7cea.jpg" width="400">
+// TODO: Consider replacing this AirCode-specific image with a generic one if needed.
 
-For more information, please refer to [https://documate.site/getting-started/backend](https://documate.site/getting-started/backend).
+For general guidance on deploying Node.js serverless functions and backend concepts, please refer to the main [Documate Backend Guide](https://documate.site/getting-started/backend).
+
+**Note:** The original code in this directory used AirCode-specific features (e.g., `aircode.db.table`, `aircode.require`). If you adapt this for other platforms like Google Cloud Functions, you'll need to replace these with standard Node.js equivalents and the appropriate SDKs for your chosen services (e.g., Firebase Admin SDK for Firestore). The `package.json` will also need to be updated accordingly by removing `aircode` dependencies and adding necessary SDKs for your target platform.

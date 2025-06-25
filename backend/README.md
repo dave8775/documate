@@ -1,7 +1,12 @@
-# Documate Backend
+# Documate Backend with Google Cloud Functions
 
-This is the backend of Documate, you can get a copy and launch your own on [AirCode](https://aircode.io) by clicking the button below.
+This directory contains the source code for the Documate backend, designed to be deployed as Google Cloud Functions.
 
-[![Deploy with AirCode](https://aircode.io/aircode-deploy-button.svg)](https://aircode.io/dashboard?owner=AirCodeLabs&repo=documate&branch=main&path=backend&appname=Documate)
+The primary backend functions are:
+- `ask.js`: Handles user questions, performs vector search, and generates answers using OpenAI.
+- `generate.js`: Generates embeddings for content.
+- `upload.js`: Manages content upload, deletion, and cleaning in Firestore.
 
-For more information, please refer to [https://documate.site/getting-started/backend](https://documate.site/getting-started/backend).
+For detailed setup and deployment instructions, please refer to the [Documate Backend Guide](https://documate.site/getting-started/backend) (ensure this link is updated if the site structure changes).
+
+The functions are intended to be deployed to Google Cloud Functions and use Google Cloud Firestore for data storage. You will need an OpenAI API key.

@@ -20,7 +20,7 @@ export default {
       'home-hero-before': () => h(HeroPattern),
       'home-hero-image': () => h(HeroVideo),
       'nav-bar-content-before': () => h(Documate, {
-        endpoint: 'https://xqtb17uycg.us.aircode.run/ask',
+        endpoint: 'https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask', // TODO: Replace with actual GCF URL
         predefinedQuestions: [
           'What is Documate?',
           'How to integrate Documate with VitePress?',

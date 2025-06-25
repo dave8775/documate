@@ -9,7 +9,8 @@ export const Documate = ({
   return (
     <>
       <button {...props} onClick={() => setOpen(true)}>Click me to Ask</button>
-      <Dialog open={isOpen} endpoint='https://8c7b1be9gi.us.aircode.run/ask' onClose={() => setOpen(false)}/>
+      <Dialog open={isOpen} endpoint='https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask' // TODO: Replace with actual GCF URL
+      onClose={() => setOpen(false)}/>
     </>
   );
 }

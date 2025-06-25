@@ -31,7 +31,7 @@ import '@documate/vue/dist/style.css'
 <template>
   <div>
     <!-- Replace the URL with your own one -->
-    <Documate endpoint="https://test123.us.aircode.run/ask" />
+    <Documate endpoint="https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask" /> // TODO: Replace with actual GCF URL
   </div>
 </template>
 ```

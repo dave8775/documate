@@ -95,7 +95,7 @@ Modify the Documate UI you added before to pass the endpoint to the `data-endpoi
 
 ```html
 <!-- Replace the URL with your own one -->
-<button id="ask-ai" data-endpoint="https://test123.us.aircode.run/ask">Ask AI</button>
+<button id="ask-ai" data-endpoint="https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask">Ask AI</button> // TODO: Replace with actual GCF URL
 ```
 
 ## Run the Project

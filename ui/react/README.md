@@ -18,7 +18,8 @@ import '@documate/react/dist/style.css'
 import { Documate } from '@documate/react'
 
 export default () => {
-   return (<Documate endpoint='https://8c7b1be9gi.us.aircode.run/ask' predefinedQuestions={[
+   return (<Documate endpoint='https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask' // TODO: Replace with actual GCF URL
+   predefinedQuestions={[
       'What is SpriteJS?',
       'How can I use SpriteJS to draw a circle?',
       'Can SpriteJS render 3D Objects?'
@@ -41,7 +42,8 @@ export const Documate = ({
   return (
     <>
       <button {...props} onClick={() => setOpen(true)}>Click me to Ask</button>
-      <Dialog open={isOpen} endpoint='https://8c7b1be9gi.us.aircode.run/ask' onClose={() => setOpen(false)}/>
+      <Dialog open={isOpen} endpoint='https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask' // TODO: Replace with actual GCF URL
+      onClose={() => setOpen(false)}/>
     </>
   );
 }

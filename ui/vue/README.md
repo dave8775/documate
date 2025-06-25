@@ -22,7 +22,8 @@ import '@documate/vue/dist/style.css'
 <template>
   <div>
     <!-- Replace the URL with your own one -->
-    <Documate endpoint="https://test123.us.aircode.run/ask" />
+    <Documate endpoint="https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask" />
+    // TODO: Replace with actual GCF URL
   </div>
 </template>
 ```
@@ -42,7 +43,7 @@ const isOpen = ref(false)
 
 <template>
 <button type="button" @click="isOpen = true">Click me to Ask AI</button>
-<Dialog  endpoint="https://xqtb17uycg.us.aircode.run/ask",
+<Dialog  endpoint="https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask", // TODO: Replace with actual GCF URL
   :predefinedQuestions=[
     'What is Documate?',
   ],

@@ -69,7 +69,7 @@ const config: DocsThemeConfig = {
   ...
   navbar: {
     // Replace the URL with your own one
-    extraContent: <Documate endpoint="https://test123.us.aircode.run/ask" />,
+    extraContent: <Documate endpoint="https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask" />, // TODO: Replace with actual GCF URL
   },
   ...
 }

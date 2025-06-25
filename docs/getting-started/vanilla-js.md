@@ -9,7 +9,7 @@ Documate supports native JavaScript pages through the `@documate/vanilla` packag
 ### Import from CDN
 
 ```html
-<button id="ask-ai" data-endpoint="https://xxxxxxxx.us.aircode.run/ask"></button>
+<button id="ask-ai" data-endpoint="https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask"></button> // TODO: Replace with actual GCF URL
 ...
 <script src="https://unpkg.com/@documate/vanilla"></script>
 ```
@@ -38,7 +38,7 @@ Create a `documate.json` file:
 {
   "root": "docs",
   "include": [ "**/*.md" ],
-  "backend": "https://xxxxxxxx.us.aircode.run/upload"
+  "backend": "https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/upload" // TODO: Replace with actual GCF URL
 }
 ```
 

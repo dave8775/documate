@@ -10,7 +10,7 @@ export default {
   Layout: () => {
     return h(DefaultTheme.Layout, null, {
       'nav-bar-content-before': () => h(Documate, {
-        endpoint: 'https://xqtb17uycg.us.aircode.run/ask',
+        endpoint: 'https://<YOUR_REGION>-<YOUR_PROJECT_ID>.cloudfunctions.net/ask', // TODO: Replace with actual GCF URL
         predefinedQuestions: [
           'What is Documate?',
         ],
