@@ -1,30 +1,48 @@
-// @see https://docs.aircode.io/guide/functions/
-const aircode = require('aircode');
+// Google Cloud Function version of ask.js
+// Note: This code was originally designed for a Firebase Functions environment,
+// which is a superset of Google Cloud Functions. Minor adjustments might be needed
+// for a pure GCF environment if not using Firebase tools for deployment.
+
+const functions = require('firebase-functions'); // For Firebase, or use GCF-specific modules
+const { Firestore } = require('@google-cloud/firestore');
 const OpenAI = require('openai');
 const { create, insertMultiple, searchVector } = require('@orama/orama');
 const tokenizer = require('gpt-3-encoder');
 const { OpenAIStream } = require('ai');
 
-const MAX_CONTEXT_TOKEN = 1500;
-const PagesTable = aircode.db.table('pages');
+const firestore = new Firestore();
+const MAX_CONTEXT_TOKEN_ASK = 1500;
 
-module.exports = async function (params, context) {
-  if (!process.env.OPENAI_API_KEY) {
-    console.log('Missing environment variable OPENAI_API_KEY. Abort.');
-    context.status(400);
-    return {
-      error:
-        'You are missing some params, please open AirCode and find the details in Logs section',
-    };
+// If deploying as a standalone GCF, the export might look like:
+// exports.ask = async (req, res) => { ... }
+// Instead of functions.https.onRequest
+// For Firebase Functions, functions.https.onRequest is correct.
+// We'll assume a GCF HTTP trigger for this file.
+
+module.exports = async (req, res) => {
+  // Set CORS headers for preflight requests and actual requests
+  res.set('Access-Control-Allow-Origin', '*'); // Adjust for production
+  res.set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    // Send response to OPTIONS requests
+    res.status(204).send('');
+    return;
   }
 
-  if (!params.question) {
+  if (!process.env.OPENAI_API_KEY) {
+    console.log('Missing environment variable OPENAI_API_KEY. Abort.');
+    res.status(400).send({ error: 'Missing OPENAI_API_KEY environment variable.' });
+    return;
+  }
+
+  const { question, project = 'default' } = req.body;
+
+  if (!question) {
     console.log('Missing param `question`. Abort.');
-    context.status(400);
-    return {
-      error:
-        'You are missing some params, please open AirCode and find the details in Logs section',
-    };
+    res.status(400).send({ error: 'Missing param `question`.' });
+    return;
   }
 
   try {
@@ -32,34 +50,37 @@ module.exports = async function (params, context) {
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    // Moderate the content
-    const question = params.question.trim();
+    const trimmedQuestion = question.trim();
     const { results: moderationRes } = await openai.moderations.create({
-      input: question,
+      input: trimmedQuestion,
     });
+
     if (moderationRes[0].flagged) {
       console.log('The user input contains flagged content.', moderationRes[0].categories);
-      context.status(403);
-      return {
+      res.status(403).send({
         error: 'Question input didn\'t meet the moderation criteria.',
         categories: moderationRes[0].categories,
-      };
+      });
+      return;
     }
 
-    // Create embedding from the question
-    const { data: [ { embedding }] } = await openai.embeddings.create({
+    const { data: [{ embedding }] } = await openai.embeddings.create({
       model: 'text-embedding-ada-002',
-      input: question.replace(/\n/g, ' '),
+      input: trimmedQuestion.replace(/\n/g, ' '),
     });
-    
-    // Get all pages
-    const { project = 'default' } = params;
-    const pages = await PagesTable
-      .where({ project })
-      .projection({ path: 1, title: 1, content: 1, embedding: 1, _id: 0 })
-      .find();
 
-    // Search vectors to generate context
+    const pagesSnapshot = await firestore.collection('pages')
+      .where('project', '==', project)
+      .where('embedding', '!=', null)
+      .get();
+
+    if (pagesSnapshot.empty) {
+      res.status(404).send({ error: 'No content found for this project.' });
+      return;
+    }
+
+    const pages = pagesSnapshot.docs.map(doc => doc.data());
+
     const memDB = await create({
       schema: {
         path: 'string',
@@ -68,46 +89,41 @@ module.exports = async function (params, context) {
         embedding: 'vector[1536]',
       },
     });
-    await insertMultiple(memDB, pages);
+
+    await insertMultiple(memDB, pages.filter(p => p.embedding && p.embedding.length === 1536));
 
     const { hits } = await searchVector(memDB, {
       vector: embedding,
       property: 'embedding',
-      similarity: 0.8,  // Minimum similarity. Defaults to `0.8`
-      limit: 10,        // Defaults to `10`
-      offset: 0,        // Defaults to `0`
+      similarity: 0.8,
+      limit: 10,
     });
 
     let tokenCount = 0;
     let contextSections = '';
 
     for (let i = 0; i < hits.length; i += 1) {
-      const { content } = hits[i].document;
-      const encoded = tokenizer.encode(content);
+      const { content: hitContent } = hits[i].document;
+      const encoded = tokenizer.encode(hitContent);
       tokenCount += encoded.length;
 
-      if (tokenCount >= MAX_CONTEXT_TOKEN && contextSections !== '') {
+      if (tokenCount >= MAX_CONTEXT_TOKEN_ASK && contextSections !== '') {
         break;
       }
-
-      contextSections += `${content.trim()}\n---\n`;
+      contextSections += `${hitContent.trim()}\n---\n`;
     }
 
-    // Ask gpt
     const prompt = `You are a very kindly assistant who loves to help people. Given the following sections from documatation, answer the question using only that information, outputted in markdown format. If you are unsure and the answer is not explicitly written in the documentation, say "Sorry, I don't know how to help with that." Always trying to anwser in the spoken language of the questioner.
 
 Context sections:
 ${contextSections}
 
 Question:
-${question}
+${trimmedQuestion}
 
-Answer as markdown (including related code snippets if available):`
+Answer as markdown (including related code snippets if available):`;
 
-    const messages = [{
-      role: 'user',
-      content: prompt,
-    }];
+    const messages = [{ role: 'user', content: prompt }];
 
     const response = await openai.chat.completions.create({
       messages,
@@ -115,16 +131,32 @@ Answer as markdown (including related code snippets if available):`
       max_tokens: 512,
       temperature: 0.4,
       stream: true,
-    })
+    });
 
-    // Transform the response into a readable stream
     const stream = OpenAIStream(response);
-    return stream;
-  } catch (error) {
-    console.error(error);
-    context.status(500);
-    return {
-      error: 'Failed to generate anwser.',
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const reader = stream.getReader();
+    const processText = async () => {
+      const { done, value } = await reader.read();
+      if (done) {
+        res.end();
+        return;
+      }
+      res.write(new TextDecoder().decode(value));
+      await processText();
     };
+    await processText();
+
+  } catch (error) {
+    console.error('Error in ask function:', error);
+    if (!res.headersSent) {
+      res.status(500).send({ error: 'Failed to generate answer.' });
+    } else {
+      console.error('Error occurred after streaming started.');
+      res.end();
+    }
   }
-}
+};

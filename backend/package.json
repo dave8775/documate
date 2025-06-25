@@ -1,9 +1,22 @@
 {
+  "name": "documate-gcf-backend",
+  "version": "1.0.0",
+  "description": "Google Cloud Functions backend for Documate",
+  "main": "index.js",
   "dependencies": {
-    "@orama/orama": "1.2.2",
-    "ai": "2.2.11",
-    "aircode": "0.6.2",
-    "gpt-3-encoder": "1.1.4",
-    "openai": "4.5.0"
-  }
+    "@google-cloud/firestore": "^7.0.0",
+    "@orama/orama": "^1.2.2",
+    "ai": "^2.2.11",
+    "firebase-functions": "^4.3.1",
+    "gpt-3-encoder": "^1.1.4",
+    "openai": "^4.5.0"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
 }
